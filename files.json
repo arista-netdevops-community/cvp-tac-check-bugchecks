@@ -1,171 +1,137 @@
 {
-  "alertmanager_notification_errors.json": {
-    "name": "Failed notifications in alertmanager",
+  "alertmanager_notification_errors": {
     "version": "1.0.0",
     "bug_engine_version": "2.4.0"
   },
-  "ambassador_expired_certs.json": {
-    "name": "Ambassador cert issues",
+  "ambassador_expired_certs": {
     "version": "1.1.0",
     "bug_engine_version": "2.5.0"
   },
-  "apish_eventsubscriber.json": {
-    "name": "Incorrect eventSubscriber entries",
+  "apish_eventsubscriber": {
     "version": "1.0.1",
     "bug_engine_version": "2.0.0"
   },
-  "apish_ztpmode.json": {
-    "name": "Incorrect ZtpMode setting for provisioned devices",
+  "apish_ztpmode": {
     "version": "1.0.1",
     "bug_engine_version": "2.0.0"
   },
-  "bug.json": {
-    "name": "Bug helper class",
+  "bug": {
     "version": "2.7.0",
     "node_version": "1.0.0"
   },
-  "cert_expiration.json": {
-    "name": "Expired Certificates",
+  "cert_expiration": {
     "version": "2.0.0",
     "bug_engine_version": "2.7.0"
   },
-  "cert_permissions.json": {
-    "name": "Wrong Certificate Permissions",
+  "cert_permissions": {
     "version": "1.0.3",
     "bug_engine_version": "2.0.0"
   },
-  "clickhouse_readonly_table.json": {
-    "name": "Readonly tables in clickhouse",
+  "clickhouse_readonly_table": {
     "version": "2.0.0",
     "bug_engine_version": "2.4.0"
   },
-  "cve_sa70.json": {
-    "name": "SA-70",
+  "cve_sa70": {
     "version": "1.0.4",
     "bug_engine_version": "2.0.0"
   },
-  "cvp_authentication_unreachable.json": {
-    "name": "Unreachable Auth Servers",
+  "cvp_authentication_unreachable": {
     "version": "1.0.3",
     "bug_engine_version": "2.4.0"
   },
-  "cvp_deadline_exceeded.json": {
-    "name": "Deadline Exceeded",
+  "cvp_deadline_exceeded": {
     "version": "1.0.4",
     "bug_engine_version": "2.4.0"
   },
-  "cvp_events_userinteraction.json": {
-    "name": "User Interaction Events not found",
+  "cvp_events_userinteraction": {
     "version": "1.0.0",
     "bug_engine_version": "2.4.0"
   },
-  "cvp_image_missingdefault.json": {
-    "name": "Missing images in CVP",
+  "cvp_image_missingdefault": {
     "version": "1.0.3",
     "bug_engine_version": "2.4.0"
   },
-  "cvp_missing_apprpms.json": {
-    "name": "Missing apprpms directory",
+  "cvp_missing_apprpms": {
     "version": "1.0.1",
     "bug_engine_version": "2.0.0"
   },
-  "cvp_running_components.json": {
-    "name": "Running Components",
+  "cvp_running_components": {
     "version": "1.0.1",
     "bug_engine_version": "2.0.0"
   },
-  "cvpi_resources.json": {
-    "name": "CVPI Resources",
+  "cvpi_resources": {
     "version": "1.0.5",
     "bug_engine_version": "2.5.0"
   },
-  "cvpi_status.json": {
-    "name": "CVPI Status",
+  "cvpi_status": {
     "version": "1.0.3",
     "bug_engine_version": "2.5.0"
   },
-  "docker_cgroup.json": {
-    "name": "Docker cgroup memory allocation failure",
+  "docker_cgroup": {
     "version": "2.0.2",
     "bug_engine_version": "2.6.0"
   },
-  "elasticsearch_oom_heap.json": {
-    "name": "ElasticSearch out of heap space",
+  "elasticsearch_oom_heap": {
     "version": "1.0.3",
     "bug_engine_version": "2.2.0"
   },
-  "hbase_corrupted_procedures.json": {
-    "name": "HBase corrupted procedures",
+  "hbase_corrupted_procedures": {
     "version": "1.0.3",
     "bug_engine_version": "2.4.0"
   },
-  "hbase_offline_regions.json": {
-    "name": "hbase_offline_regions",
+  "hbase_offline_regions": {
     "version": "1.0.0",
     "bug_engine_version": "2.6.0"
   },
-  "hbase_stuck_operations.json": {
-    "name": "HBase stuck operations",
+  "hbase_stuck_operations": {
     "version": "1.0.3",
     "bug_engine_version": "2.4.0"
   },
-  "hbase_unassigned_regions.json": {
-    "name": "HBase unassigned regions",
+  "hbase_unassigned_regions": {
     "version": "2.0.4",
     "bug_engine_version": "2.4.0"
   },
-  "k8s_pods_crashloop.json": {
-    "name": "Crashed Pods",
+  "k8s_pods_crashloop": {
     "version": "1.0.1",
     "bug_engine_version": "2.0.0"
   },
-  "k8s_pods_failed.json": {
-    "name": "Failed K8s pods",
+  "k8s_pods_failed": {
     "version": "1.0.1",
     "bug_engine_version": "2.0.0"
   },
-  "k8s_pods_pending.json": {
-    "name": "Pending K8s pods",
+  "k8s_pods_pending": {
     "version": "1.0.1",
     "bug_engine_version": "2.0.0"
   },
-  "k8s_secrets_missing.json": {
-    "name": "Missing kubernetes secrets",
+  "k8s_secrets_missing": {
     "version": "2.0.0",
     "bug_engine_version": "2.5.0"
   },
-  "kafka_lag.json": {
-    "name": "Kafka Lag",
+  "kafka_lag": {
     "version": "1.0.3",
     "bug_engine_version": "2.4.0"
   },
-  "os_availablememory.json": {
-    "name": "Available Memory",
+  "os_availablememory": {
     "version": "1.0.3",
     "bug_engine_version": "2.4.0"
   },
-  "os_diskspace.json": {
-    "name": "Disk Space",
+  "os_diskspace": {
     "version": "1.0.3",
     "bug_engine_version": "2.4.0"
   },
-  "os_diskthroughput.json": {
-    "name": "Disk Throughput",
+  "os_diskthroughput": {
     "version": "1.0.2",
     "bug_engine_version": "2.0.0"
   },
-  "os_loadaverage.json": {
-    "name": "Load Average",
+  "os_loadaverage": {
     "version": "1.0.3",
     "bug_engine_version": "2.4.0"
   },
-  "os_ntpsync.json": {
-    "name": "NTP Synchronization",
+  "os_ntpsync": {
     "version": "1.0.1",
     "bug_engine_version": "2.0.0"
   },
-  "os_oom.json": {
-    "name": "OOM errors",
+  "os_oom": {
     "version": "1.0.4",
     "bug_engine_version": "2.4.0"
   }
