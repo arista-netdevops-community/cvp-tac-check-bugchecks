@@ -1,0 +1,172 @@
+{
+  "alertmanager_notification_errors.json": {
+    "name": "Failed notifications in alertmanager",
+    "version": "1.0.0",
+    "bug_engine_version": "2.4.0"
+  },
+  "ambassador_expired_certs.json": {
+    "name": "Ambassador cert issues",
+    "version": "1.1.0",
+    "bug_engine_version": "2.5.0"
+  },
+  "apish_eventsubscriber.json": {
+    "name": "Incorrect eventSubscriber entries",
+    "version": "1.0.1",
+    "bug_engine_version": "2.0.0"
+  },
+  "apish_ztpmode.json": {
+    "name": "Incorrect ZtpMode setting for provisioned devices",
+    "version": "1.0.1",
+    "bug_engine_version": "2.0.0"
+  },
+  "bug.json": {
+    "name": "Bug helper class",
+    "version": "2.7.0",
+    "node_version": "1.0.0"
+  },
+  "cert_expiration.json": {
+    "name": "Expired Certificates",
+    "version": "2.0.0",
+    "bug_engine_version": "2.7.0"
+  },
+  "cert_permissions.json": {
+    "name": "Wrong Certificate Permissions",
+    "version": "1.0.3",
+    "bug_engine_version": "2.0.0"
+  },
+  "clickhouse_readonly_table.json": {
+    "name": "Readonly tables in clickhouse",
+    "version": "2.0.0",
+    "bug_engine_version": "2.4.0"
+  },
+  "cve_sa70.json": {
+    "name": "SA-70",
+    "version": "1.0.4",
+    "bug_engine_version": "2.0.0"
+  },
+  "cvp_authentication_unreachable.json": {
+    "name": "Unreachable Auth Servers",
+    "version": "1.0.3",
+    "bug_engine_version": "2.4.0"
+  },
+  "cvp_deadline_exceeded.json": {
+    "name": "Deadline Exceeded",
+    "version": "1.0.4",
+    "bug_engine_version": "2.4.0"
+  },
+  "cvp_events_userinteraction.json": {
+    "name": "User Interaction Events not found",
+    "version": "1.0.0",
+    "bug_engine_version": "2.4.0"
+  },
+  "cvp_image_missingdefault.json": {
+    "name": "Missing images in CVP",
+    "version": "1.0.3",
+    "bug_engine_version": "2.4.0"
+  },
+  "cvp_missing_apprpms.json": {
+    "name": "Missing apprpms directory",
+    "version": "1.0.1",
+    "bug_engine_version": "2.0.0"
+  },
+  "cvp_running_components.json": {
+    "name": "Running Components",
+    "version": "1.0.1",
+    "bug_engine_version": "2.0.0"
+  },
+  "cvpi_resources.json": {
+    "name": "CVPI Resources",
+    "version": "1.0.5",
+    "bug_engine_version": "2.5.0"
+  },
+  "cvpi_status.json": {
+    "name": "CVPI Status",
+    "version": "1.0.3",
+    "bug_engine_version": "2.5.0"
+  },
+  "docker_cgroup.json": {
+    "name": "Docker cgroup memory allocation failure",
+    "version": "2.0.2",
+    "bug_engine_version": "2.6.0"
+  },
+  "elasticsearch_oom_heap.json": {
+    "name": "ElasticSearch out of heap space",
+    "version": "1.0.3",
+    "bug_engine_version": "2.2.0"
+  },
+  "hbase_corrupted_procedures.json": {
+    "name": "HBase corrupted procedures",
+    "version": "1.0.3",
+    "bug_engine_version": "2.4.0"
+  },
+  "hbase_offline_regions.json": {
+    "name": "hbase_offline_regions",
+    "version": "1.0.0",
+    "bug_engine_version": "2.6.0"
+  },
+  "hbase_stuck_operations.json": {
+    "name": "HBase stuck operations",
+    "version": "1.0.3",
+    "bug_engine_version": "2.4.0"
+  },
+  "hbase_unassigned_regions.json": {
+    "name": "HBase unassigned regions",
+    "version": "2.0.4",
+    "bug_engine_version": "2.4.0"
+  },
+  "k8s_pods_crashloop.json": {
+    "name": "Crashed Pods",
+    "version": "1.0.1",
+    "bug_engine_version": "2.0.0"
+  },
+  "k8s_pods_failed.json": {
+    "name": "Failed K8s pods",
+    "version": "1.0.1",
+    "bug_engine_version": "2.0.0"
+  },
+  "k8s_pods_pending.json": {
+    "name": "Pending K8s pods",
+    "version": "1.0.1",
+    "bug_engine_version": "2.0.0"
+  },
+  "k8s_secrets_missing.json": {
+    "name": "Missing kubernetes secrets",
+    "version": "2.0.0",
+    "bug_engine_version": "2.5.0"
+  },
+  "kafka_lag.json": {
+    "name": "Kafka Lag",
+    "version": "1.0.3",
+    "bug_engine_version": "2.4.0"
+  },
+  "os_availablememory.json": {
+    "name": "Available Memory",
+    "version": "1.0.3",
+    "bug_engine_version": "2.4.0"
+  },
+  "os_diskspace.json": {
+    "name": "Disk Space",
+    "version": "1.0.3",
+    "bug_engine_version": "2.4.0"
+  },
+  "os_diskthroughput.json": {
+    "name": "Disk Throughput",
+    "version": "1.0.2",
+    "bug_engine_version": "2.0.0"
+  },
+  "os_loadaverage.json": {
+    "name": "Load Average",
+    "version": "1.0.3",
+    "bug_engine_version": "2.4.0"
+  },
+  "os_ntpsync.json": {
+    "name": "NTP Synchronization",
+    "version": "1.0.1",
+    "bug_engine_version": "2.0.0"
+  },
+  "os_oom.json": {
+    "name": "OOM errors",
+    "version": "1.0.4",
+    "bug_engine_version": "2.4.0"
+  }
+}
