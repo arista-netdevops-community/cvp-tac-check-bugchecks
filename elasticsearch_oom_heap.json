@@ -1,0 +1,25 @@
+{
+  "name": "ElasticSearch out of heap space",
+  "description": "Out of memory errors in elasticsearch due to insufficient heap space.",
+  "conditions": [
+    {}
+  ],
+  "tags": [
+    "elasticsearch"
+  ],
+  "version": "1.0.3",
+  "bug_engine_version": "2.2.0",
+  "scan": {
+    "details": "Checks if there are OutOfMemoryError: Java heap space in elasticsearch logs.",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "Increase Elasticsearch's memory limits.",
+    "steps": [
+      "Stop elasticsearch",
+      "Increase elasticsearch memory limits",
+      "Start CVP"
+    ],
+    "privileges": "cvp"
+  }
+}

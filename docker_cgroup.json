@@ -1,0 +1,37 @@
+{
+  "name": "Docker cgroup memory allocation failure",
+  "description": "Docker containers failing to start with cgroup memory allocation error.",
+  "conditions": [
+    {
+      "id": "550147",
+      "links": [
+        "https://www.arista.com/en/support/software-bug-portal/bugdetail?bug_id=550147",
+        "https://github.com/docker/for-linux/issues/841"
+      ]
+    }
+  ],
+  "tags": [
+    "docker",
+    "os"
+  ],
+  "version": "2.0.2",
+  "bug_engine_version": "2.6.0",
+  "scan": {
+    "details": "Checks for related error messages and missing settings.",
+    "steps": [
+      "Checks if `cgroup.memory=nokmem` is present on the `GRUB_CMDLINE_LINUX` parameter in `/etc/default/grub`",
+      "Checks if `cgroup.memory=nokmem` is present on `/proc/cmdline`",
+      "Checks if there are `cgroup.*cannot allocate memory` messages on kubernetes pods"
+    ],
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "Apply kernel settings on grub's configuration",
+    "steps": [
+      "Back up the current `/etc/default/grub` file",
+      "Add `cgroup.memory=nokmem` if not present",
+      "Regenerate grub configuration"
+    ],
+    "privileges": "root"
+  }
+}

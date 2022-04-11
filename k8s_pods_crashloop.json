@@ -1,0 +1,17 @@
+{
+  "name": "Crashed Pods",
+  "description": "Kubernetes pods in CrashLoopBackOff state.",
+  "tags": [
+    "kubernetes"
+  ],
+  "version": "1.0.1",
+  "bug_engine_version": "2.0.0",
+  "scan": {
+    "details": "Checks if there are pods in `CrashLoopBackOff` state in kubernetes.",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "No patch is available. This is an informational message and further debugging will be needed by the TAC team.",
+    "privileges": "cvp"
+  }
+}

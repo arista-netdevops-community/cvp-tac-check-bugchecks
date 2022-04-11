@@ -1,0 +1,18 @@
+{
+  "name": "Disk Space",
+  "description": "Disk space is lower than threshold.",
+  "tags": [
+    "os",
+    "disk"
+  ],
+  "version": "1.0.3",
+  "bug_engine_version": "2.4.0",
+  "scan": {
+    "details": "Checks if disk space usage is above a threshold (70%)",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "No patch is available. This is an informational message and further debugging will be needed by the TAC team.",
+    "privileges": "cvp"
+  }
+}

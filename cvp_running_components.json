@@ -1,0 +1,17 @@
+{
+  "name": "Running Components",
+  "description": "Enabled CVP components that are not running.",
+  "tags": [
+    "cvp"
+  ],
+  "version": "1.0.1",
+  "bug_engine_version": "2.0.0",
+  "scan": {
+    "details": "Checks if enabled components are not running.\n\n*At the moment this is only supported when running in live mode*",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "No patch is available. This is an informational message and further debugging will be needed by the TAC team.",
+    "privileges": "cvp"
+  }
+}

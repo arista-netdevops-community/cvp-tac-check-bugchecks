@@ -1,0 +1,26 @@
+{
+  "name": "Missing images in CVP",
+  "description": "Images are configured in CVP but aren't being loaded by the image service.",
+  "conditions": [
+    {}
+  ],
+  "tags": [
+    "cvp",
+    "image"
+  ],
+  "version": "1.0.3",
+  "bug_engine_version": "2.4.0",
+  "scan": {
+    "details": "Checks if required images weren't loaded.",
+    "steps": [
+      "Check if there are images that need to be added.",
+      "Check if the image service wasn't able to find the images.",
+      "Check if the image service wasn't able to add those missing images"
+    ],
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "No patch is available. The TAC engineer handling the issue should the provided internal links for instructions on fixing it.",
+    "privileges": "cvp"
+  }
+}

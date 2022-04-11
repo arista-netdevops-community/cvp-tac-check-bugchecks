@@ -1,0 +1,17 @@
+{
+  "name": "HBase stuck operations",
+  "description": "HBase operations in STUCK state.",
+  "conditions": [
+    {}
+  ],
+  "tags": [
+    "cvp",
+    "hbase"
+  ],
+  "version": "1.0.3",
+  "bug_engine_version": "2.4.0",
+  "scan": {
+    "details": "Checks if there are stuck operations on hbase logs.",
+    "privileges": "cvp"
+  }
+}

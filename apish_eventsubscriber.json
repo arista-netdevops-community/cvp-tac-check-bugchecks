@@ -1,0 +1,28 @@
+{
+  "name": "Incorrect eventSubscriber entries",
+  "description": "Certificate upload fails due to stale entries in the database.",
+  "conditions": [
+    {
+      "id": "491453",
+      "introduced_in": "2020.1.0",
+      "links": [
+        "https://www.arista.com/en/support/software-bug-portal/bugdetail?bug_id=491453"
+      ]
+    }
+  ],
+  "details": "The UI will throw something similar to 'Add failed POST http://127.0.0.1:8080/cvpservice/broadcast/broadcast.do: dial tcp 127.0 .0 .1: 8080: connect: connection refused'\n The workaround is to delete the stale entries in the eventSubscriber table.",
+  "tags": [
+    "eventsubscriber ",
+    "apish "
+  ],
+  "version": "1.0.1",
+  "bug_engine_version": "2.0.0",
+  "scan": {
+    "details": "Reads the /eventSubscriber/ids path in the 'cvp' dataset.",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "Removes all the ids under /eventSubscriber/ids path.",
+    "privileges": "cvp"
+  }
+}

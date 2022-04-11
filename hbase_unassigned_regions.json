@@ -1,0 +1,21 @@
+{
+  "name": "HBase unassigned regions",
+  "description": "HBase regions not deployed on any region server.",
+  "conditions": [
+    {}
+  ],
+  "tags": [
+    "cvp",
+    "hbase"
+  ],
+  "version": "2.0.4",
+  "bug_engine_version": "2.4.0",
+  "scan": {
+    "details": "Checks if there are unassigned regions on hbase.",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "Assigns unassigned regions using hbase shell.",
+    "privileges": "cvp"
+  }
+}

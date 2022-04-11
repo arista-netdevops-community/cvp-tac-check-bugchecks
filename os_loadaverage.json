@@ -1,0 +1,18 @@
+{
+  "name": "Load Average",
+  "description": "Load average is higher than the number of CPUs in the node",
+  "tags": [
+    "os",
+    "performance"
+  ],
+  "version": "1.0.3",
+  "bug_engine_version": "2.4.0",
+  "scan": {
+    "details": "Checks if load average is high by reading `/proc/loadavg` (live) or `cvpi_commands/top` (logs).\n\nIt reads all 3 load average measurements (1, 5 and 15 minutes) and takes the highest in consideration, so a warning may still be displayed if there was a recent peak but things are back to normal at the moment the check is done.",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "No patch is available. This is an informational message and further debugging will be needed by the TAC team.",
+    "privileges": "cvp"
+  }
+}

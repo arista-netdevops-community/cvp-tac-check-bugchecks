@@ -1,0 +1,22 @@
+{
+  "name": "Wrong Certificate Permissions",
+  "description": "Wrong permissions or ownership on CVP certificate files.",
+  "tags": [
+    "cvp",
+    "certificates"
+  ],
+  "version": "1.0.3",
+  "bug_engine_version": "2.0.0",
+  "scan": {
+    "details": "Checks if backend certificates are owned by the `cvp` user and if their permissions match the expected ones.",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "Correct files ownership and permissions.",
+    "steps": [
+      "Change the certificate files ownership to the `cvp` user and group.",
+      "Set the expected permissions on the files."
+    ],
+    "privileges": "root"
+  }
+}

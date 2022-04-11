@@ -1,0 +1,18 @@
+{
+  "name": "Kafka Lag",
+  "description": "High Kafka lag on the postDB topic.",
+  "tags": [
+    "cvp",
+    "kafka"
+  ],
+  "version": "1.0.3",
+  "bug_engine_version": "2.4.0",
+  "scan": {
+    "details": "Checks if the lag in Kafka's postDB topic is above a threshold (500).",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "No patch is available. This is an informational message and further debugging will be needed by the TAC team.",
+    "privileges": "cvp"
+  }
+}

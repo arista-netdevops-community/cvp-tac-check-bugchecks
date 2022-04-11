@@ -1,0 +1,36 @@
+{
+  "name": "Ambassador cert issues",
+  "description": "Invalid or mismatching ambassador certificates.",
+  "details": "To confirm results from the debug bundle run the following commands:\n\n# kubectl get secret ambassador-tls-origin -o 'go-template={{ index .data \"tls.crt\"}}'|base64 -d|diff /cvpi/tls/certs/ambassador.crt -\n# kubectl get secret ambassador-tls-origin -o 'go-template={{ index .data \"tls.crt\"}}'|base64 -d|openssl x509 -noout -enddate\n",
+  "conditions": [
+    {
+      "id": "666794",
+      "intoduced_in": "2020.3.0"
+    }
+  ],
+  "tags": [
+    "ambassador",
+    "certificates"
+  ],
+  "version": "1.1.0",
+  "bug_engine_version": "2.5.0",
+  "scan": {
+    "details": "Checks for not yet valid, expired or mismatching ambassador certificates and secrets.",
+    "steps": [
+      "Check /etc/cvpi/tls/certs/ambassador.crt (live only)",
+      "Check ambassador-tls-origin secret (live only)",
+      "Compare the certificate and secret contents (live only)",
+      "Check log files for error messages caused by expired ambassador certificates"
+    ],
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "Recreate ambassador certificate and secret.",
+    "steps": [
+      "Reset ambassador",
+      "Init ambassador",
+      "Start all CVP components"
+    ],
+    "privileges": "cvp"
+  }
+}

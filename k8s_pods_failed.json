@@ -1,0 +1,17 @@
+{
+  "name": "Failed K8s pods",
+  "description": "Kubernetes pods in Failed state.",
+  "tags": [
+    "kubernetes"
+  ],
+  "version": "1.0.1",
+  "bug_engine_version": "2.0.0",
+  "scan": {
+    "details": "Checks if there are pods in `Failed` state in kubernetes.",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "No patch is available. This is an informational message and further debugging will be needed by the TAC team.",
+    "privileges": "cvp"
+  }
+}

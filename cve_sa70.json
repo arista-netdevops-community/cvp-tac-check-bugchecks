@@ -1,0 +1,31 @@
+{
+  "name": "SA-70",
+  "description": "JVM configuration exposes this CVP cluster to CVE-2021-44228",
+  "details": "JVM configuration exposes this CVP cluster to CVE-2021-44228 as detailed in Arista Security Advisory 70 (https://www.arista.com/en/support/advisories-notices/security-advisories/13425-security-advisory-0070)",
+  "conditions": [
+    {
+      "introduced_in": "2019.1.0",
+      "fixed_in": "2021.2.2",
+      "links": [
+        "https://www.arista.com/en/support/advisories-notices/security-advisories/13425-security-advisory-0070",
+        "https://nvd.nist.gov/vuln/detail/CVE-2021-44228",
+        "https://logging.apache.org/log4j/2.x/security.html"
+      ]
+    }
+  ],
+  "tags": [
+    "security-advisory",
+    "log4j",
+    "java"
+  ],
+  "version": "1.0.4",
+  "bug_engine_version": "2.0.0",
+  "scan": {
+    "details": "Checks the CVP version and based on that, examines either /cvpi/conf/templates/elasticsearch.jvm.options (2019-2020.2.4) or /cvpi/elasticsearch/conf/jvm.options (2020.3.0+) to determine if log4j2.formatMsgNoLookups=true is set",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "Writes log4j2.formatMsgNoLookups=true key to JVM options file and rebuilds affected component deployments in the cluster to mitigate CVE",
+    "privileges": "cvp"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "Missing apprpms directory",
+  "description": "/data/apprpms directory does not exist.",
+  "conditions": [
+    {
+      "id": "634395",
+      "introduced_in": "2021.2.0"
+    }
+  ],
+  "tags": [
+    "cvp",
+    "extensions",
+    "ipam",
+    "cloudbuilder"
+  ],
+  "version": "1.0.1",
+  "bug_engine_version": "2.0.0",
+  "scan": {
+    "details": "Check if /data/apprpms exist.",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "Create /data/apprpms.",
+    "privileges": "cvp"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "Disk Throughput",
+  "description": "Disk throughput below threshold.",
+  "tags": [
+    "os",
+    "disk",
+    "performance"
+  ],
+  "version": "1.0.2",
+  "bug_engine_version": "2.0.0",
+  "scan": {
+    "details": "Checks if the disk bandwidth is below a threshold (50mb/s).",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "No patch is available. This is an informational message and further debugging will be needed by the TAC team.",
+    "privileges": "cvp"
+  }
+}

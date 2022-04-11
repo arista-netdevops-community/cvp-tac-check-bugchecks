@@ -1,0 +1,29 @@
+{
+  "name": "hbase_offline_regions",
+  "description": "Offline hbase regions",
+  "conditions": [
+    {}
+  ],
+  "tags": [
+    "hbase"
+  ],
+  "version": "1.0.0",
+  "bug_engine_version": "2.6.0",
+  "scan": {
+    "details": "Scan log files looking for offline regions.",
+    "steps": [
+      "Determine current hbase master log file",
+      "Look for lines containing the string 'Master startup cannot progress, in holding-pattern until region onlined.'",
+      "Extract and store the region name from matching lines."
+    ],
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "Assign offline regions",
+    "steps": [
+      "Assign open offline regions",
+      "Restart regionserver if regions are not open"
+    ],
+    "privileges": "root"
+  }
+}

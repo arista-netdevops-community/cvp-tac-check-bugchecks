@@ -1,0 +1,9 @@
+{
+  "name": "Bug helper class",
+  "description": "Contains useful methods intended to be used by bugchecks.",
+  "tags": [
+    "internal"
+  ],
+  "version": "2.7.0",
+  "node_version": "1.0.0"
+}

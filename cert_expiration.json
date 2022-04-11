@@ -1,0 +1,30 @@
+{
+  "name": "Expired Certificates",
+  "description": "Expired CVP backend certificates",
+  "tags": [
+    "cvp",
+    "certificates"
+  ],
+  "conditions": [
+    {}
+  ],
+  "version": "2.0.0",
+  "bug_engine_version": "2.7.0",
+  "scan": {
+    "details": "Checks if backend certificates (`/cvpi/tls/certs/server.crt`, `/cvpi/tls/certs/aerisadmin.crt` and `/cvpi/tls/certs/ca.crt`) have expired or will expire within the next 30 days.\n\nIf checking logs we look for pods in the `crashloopbackoff` state and compare it to a list of components that are known to fail if certificates have expired: `aaa`, `aeris-ccapi`, `audit`, `ccapi`, `cloudmanager`, `enroll`, `image`, `inventory`, `snapshot`, `ztp`. If the crashed components match this list, then we indicate that with an error message.\n\nHowever if CVP services haven't been restarted pods might still be running. In this case we check for services throwing out `Context Deadline Exceeded` messages and compare them to the list mentioned previously. If we have a match we indicate that with a warning message.",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "Renew backend and CA certificates.",
+    "steps": [
+      "Stop CVP",
+      "Start aeris",
+      "Remove the backend certificates",
+      "Reset and initialize the CA",
+      "Initialize Aeris",
+      "Restart Aeris",
+      "Start all remaining CVP services"
+    ],
+    "privileges": "cvp"
+  }
+}

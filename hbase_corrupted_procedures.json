@@ -1,0 +1,29 @@
+{
+  "name": "HBase corrupted procedures",
+  "description": "Corrupted procedures in HBase WAL files.",
+  "conditions": [
+    {}
+  ],
+  "tags": [
+    "cvp",
+    "hbase"
+  ],
+  "version": "1.0.3",
+  "bug_engine_version": "2.4.0",
+  "scan": {
+    "details": "Checks if there are corrupted procedures on hbase logs.",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "Fix database inconsistencies using hbck.",
+    "steps": [
+      "Stop all CVP components except for hadoop",
+      "Move current WAL files to a backup location",
+      "Start HBase master and regionserver",
+      "Run hbck",
+      "Rotate Hbase logs",
+      "Start CVP"
+    ],
+    "privileges": "cvp"
+  }
+}

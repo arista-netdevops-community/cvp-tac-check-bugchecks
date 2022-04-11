@@ -1,0 +1,17 @@
+{
+  "name": "Deadline Exceeded",
+  "description": "Deadline Exceeded messages in services.",
+  "tags": [
+    "cvp"
+  ],
+  "version": "1.0.4",
+  "bug_engine_version": "2.4.0",
+  "scan": {
+    "details": "Checks for `Context Deadline Exceeded` messages in services.",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "No patch is available. This is an informational message and further debugging will be needed by the TAC team.",
+    "privileges": "cvp"
+  }
+}

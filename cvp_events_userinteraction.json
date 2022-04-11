@@ -1,0 +1,24 @@
+{
+  "name": "User Interaction Events not found",
+  "description": "Acknowledging events may not work",
+  "details": "Incorrect start/end values are specified while reading from storage when performing user interaction having msec-truncated targetTs value. This may prevent the users from acknowleding events.",
+  "conditions": [
+    {
+      "id": "639278"
+    }
+  ],
+  "tags": [
+    "cvp",
+    "events"
+  ],
+  "version": "1.0.0",
+  "bug_engine_version": "2.4.0",
+  "scan": {
+    "details": "Checks the turbine-version-events-active.log for not found interactions",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "Restart the turbine-version-events-active component.",
+    "privileges": "cvp"
+  }
+}

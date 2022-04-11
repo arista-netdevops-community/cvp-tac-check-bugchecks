@@ -1,0 +1,20 @@
+{
+  "name": "Unreachable Auth Servers",
+  "description": "Configured authentication servers could not be reached.",
+  "tags": [
+    "cvp",
+    "aaa",
+    "tacacs",
+    "authentication"
+  ],
+  "version": "1.0.3",
+  "bug_engine_version": "2.4.0",
+  "scan": {
+    "details": "Checks for `Server unreachable` messages in aaa logs.",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "No patch is available. This is an informational message and further debugging will be needed by the TAC team.",
+    "privileges": "cvp"
+  }
+}

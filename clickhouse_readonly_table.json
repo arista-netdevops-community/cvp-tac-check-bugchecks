@@ -1,0 +1,29 @@
+{
+  "name": "Readonly tables in clickhouse",
+  "description": "Clickhouse fails to start and clover cannot initialize schema due to readonly tables.",
+  "tags": [
+    "clickhouse",
+    "clover"
+  ],
+  "version": "2.0.0",
+  "bug_engine_version": "2.4.0",
+  "scan": {
+    "details": "Check clickhouse logs for 'Table is in readonly mode' messages",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "Detach and re-attach the affected table.",
+    "privileges": "cvp",
+    "forced": {
+      "details": "Reset clickhouse. This will wipe telemetry data.",
+      "privileges": "cvp",
+      "steps": [
+        "stop cvp",
+        "remove org data from clickhouse",
+        "start zookeeper",
+        "remove clickhouse path from zookeeper",
+        "start cvp"
+      ]
+    }
+  }
+}

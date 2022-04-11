@@ -1,0 +1,36 @@
+{
+  "name": "Incorrect ZtpMode setting for provisioned devices",
+  "description": "Certain scenarios can lead to ZtpMode being set to \"true\" for provisioned devices at various paths in the NetDb",
+  "conditions": [
+    {
+      "id": "528983",
+      "introduced_in": "2019.1.0",
+      "fixed_in": "2021.1.0",
+      "links": [
+        "https://www.arista.com/en/support/software-bug-portal/bugdetail?bug_id=528983"
+      ]
+    },
+    {
+      "id": "603699",
+      "introduced_in": "2019.1.0",
+      "fixed_in": "2021.2.1",
+      "links": [
+        "https://www.arista.com/en/support/software-bug-portal/bugdetail?bug_id=603699"
+      ]
+    }
+  ],
+  "tags": [
+    "ztp",
+    "apish"
+  ],
+  "version": "1.0.1",
+  "bug_engine_version": "2.0.0",
+  "scan": {
+    "details": "Reads the /provisioning/device/ids and /ztpService/status/device/ids paths in the 'cvp' dataset to find devices with ZtpMode set to true where the ParentContainerKey value is not equal to 'undefined_container'",
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "Rewrites key values for affected devices in scanned paths to set ZtpMode to false",
+    "privileges": "cvp"
+  }
+}
