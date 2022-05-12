@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name, useless-super-delegation, line-too-long
+# pylint: disable=invalid-name, useless-super-delegation, line-too-long, consider-using-dict-items
 from datetime import datetime
 from OpenSSL import crypto
 from bugchecks.bug import Bug
@@ -20,7 +20,7 @@ class ambassador_expired_certs(Bug):
         ambassador_cert['file'] = {}
         ambassador_cert['file']['name'] = '/cvpi/tls/certs/ambassador.crt'
         try:
-            ambassador_cert['file']['contents'] = self.read_file(ambassador_cert['file']['name'])
+            ambassador_cert['file']['contents'] = '\n'.join(self.read_file(ambassador_cert['file']['name'])).strip()
         except Exception as error:
             value = code.ERROR
             message = "Could not open ambassador cert file %s: %s" %(ambassador_cert['file']['name'], error)
@@ -38,29 +38,29 @@ class ambassador_expired_certs(Bug):
         ambassador_cert['secret'] = {}
         ambassador_cert['secret']['name'] = 'ambassador-tls-origin'
         try:
-            ambassador_cert['secret']['contents'] = self.run_command("kubectl get secret %s -o 'go-template={{ index .data \"tls.crt\"}}'|base64 -d" %ambassador_cert['secret']['name']).stdout
-        except Exception as error:
+            ambassador_cert['secret']['contents'] = '\n'.join(self.run_command("kubectl get secret %s -o 'go-template={{ index .data \"tls.crt\"}}'|base64 -d" %ambassador_cert['secret']['name']).stdout).strip()
+        except IOError as error_message:
             value = code.ERROR
-            message = "Could not read ambassador cert secret %s: %s" %(ambassador_cert['secret']['name'], error)
+            message = "Could not read ambassador cert secret %s: %s" %(ambassador_cert['secret']['name'], error_message)
             return value, message
 
         try:
             ambassador_cert['secret']['cert'] = crypto.load_certificate(crypto.FILETYPE_PEM, ambassador_cert['secret']['contents'])
             ambassador_cert['secret']['not_before'] = datetime.strptime(ambassador_cert['secret']['cert'].get_notBefore().decode(encoding), date_format)
             ambassador_cert['secret']['not_after'] = datetime.strptime(ambassador_cert['secret']['cert'].get_notAfter().decode(encoding), date_format)
-        except Exception as error:
+        except IOError as error_message:
             value = code.ERROR
-            message = "Could not load ambassador cert secret %s: %s" %(ambassador_cert['secret']['name'], error)
+            message = "Could not load ambassador cert secret %s: %s" %(ambassador_cert['secret']['name'], error_message)
             return value, message
 
-        for cert in ambassador_cert.items():
+        for cert in ambassador_cert:
             if now < ambassador_cert[cert]['not_before']:
                 value = code.ERROR
                 message = "Ambassador cert %s not valid yet" %cert
             elif now > ambassador_cert[cert]['not_after']:
                 value = code.ERROR
                 message = "Ambassador cert %s has expired" %cert
-        if ambassador_cert['file']['cert'].get_pubkey() != ambassador_cert['secret']['cert'].get_pubkey():
+        if crypto.dump_certificate(crypto.FILETYPE_PEM, ambassador_cert['file']['cert']) != crypto.dump_certificate(crypto.FILETYPE_PEM, ambassador_cert['secret']['cert']):
             if value != code.ERROR:
                 value = code.WARNING
             msg = "Mismatch between ambassador cert file and kubernetes secret"
@@ -81,16 +81,17 @@ class ambassador_expired_certs(Bug):
             value, message = self.scan_remote()
 
         if value == code.OK:
-            errors = None
-            error_message = 'rpc error: code = Unauthenticated desc = not authenticated'
             if self.is_using_local_logs():
-                logfile = self.local_directory('commands')+'/journalctl'
-                errors = self.read_file(logfile, grep=error_message)
-            else:
-                errors = self.run_command("journalctl|grep '%s'" %error_message).stdout
-            if errors:
-                value = code.INFO
-                message = 'Service authentication errors found in logs. This might not be an issue.'
+                errors = None
+                error_message = 'rpc error: code = Unauthenticated desc = not authenticated'
+                if self.is_using_local_logs():
+                    logfile = self.local_directory('commands')+'/journalctl'
+                    errors = self.read_file(logfile, grep=error_message)
+                else:
+                    errors = self.run_command("journalctl|grep '%s'" %error_message).stdout
+                if errors:
+                    value = code.INFO
+                    message = 'Service authentication errors found in logs. This might not be an issue.'
         else:
             self.debug("Found certificate issues: %s. Skipping log checks." %message, code.LOG_DEBUG)
 
@@ -113,10 +114,16 @@ class ambassador_expired_certs(Bug):
             message = "Ambassador reset failed"
             value = code.WARNING
 
+        self.debug("Copying certificates to all nodes...", code.LOG_INFO)
+        copy_to = ['secondary', 'tertiary']
+        for node in copy_to:
+            self.debug("  %s" %node, code.LOG_INFO)
+            self.run_command("su - cvp -c \"scp -pr $PRIMARY_HOST_IP:/cvpi/tls/certs/amb* $%s_HOST_IP:/cvpi/tls/certs\"" %node.upper())
+
         self.debug("Starting CVP...", code.LOG_INFO)
         failed = self.cvpi(action='start').failed
         if failed:
-            message = "Failed to start CVP"
+            message = "Failed to start CVP: %s" %failed
             value = code.ERROR
 
         return value, message

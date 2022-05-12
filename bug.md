@@ -7,6 +7,46 @@
 - `local_logs_directory()` will be removed.
 
 # Bug() changelog
+## 2.9.4
+- Fix running commands when reading debug logs
+
+## 2.9.3
+- Allow explicitly setting the key name when saving cluster values
+
+## 2.9.2
+- Prevent timeouts during cvpi command execution
+
+## 2.9.1
+- Improve container information debugging messages
+
+## 2.9.0
+- Added support for `component_requirements` to pre-scan and pre-patch actions.
+- Added timeouts for commands running over ssh.
+
+## 2.8.1
+- Fixed cache locking
+- Fixed using read_files() on remote hosts
+
+## 2.8.0
+- Added the post_scan() method. This is invoked after scanning is completed in all nodes. The goal of this method is to allow bugchecks to perform simple operations, such as cluster-wide value comparisons, and **must not** be used for complex/expensive calls as this doesn't benefit from performance enhancements such as threading.
+- Added the save_cluster_value() method. This saves values in a way that can be retrieved by the post_scan() method running in any nodes and can be used to compare values across different nodes.
+- Added the get_cluster_values() method. This retrieves values saved by save_cluster_value() from all nodes. Usage example:
+```python
+def scan(self):
+      hostname = self.get_node_name()
+      self.save_cluster_value(hostname)
+def post_scan(self):
+      message = "Primary: %s | Secondary: %s | Tertiary: %s" %(
+        self.get_cluster_values().primary,
+        self.get_cluster_values().secondary,
+        self.get_cluster_values().tertiary
+      )
+      self.set_status(code.WARNING, message)
+```
+
+## 2.7.1
+- Do not return the connection object along with bugcheck information
+
 ## 2.7.0
 - Added the `certificates` child class to make it easier to work with certificates. Sample usage:
 ```python

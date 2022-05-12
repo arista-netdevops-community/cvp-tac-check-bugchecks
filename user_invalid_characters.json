@@ -1,0 +1,37 @@
+{
+  "name": "Invalid characters in usernames",
+  "description": "Invalid characters in usernames.",
+  "conditions": [
+    {
+      "id": "662346",
+      "introduced_in": "2020.3.0"
+    }
+  ],
+  "details": "Older CVP versions used to allow usernames with the \\ character in it, which is no longer valid. This causes CVP to fail to start after an upgrade if there are users like this in the db.",
+  "tags": [
+    "user"
+  ],
+  "version": "1.1.0",
+  "bug_engine_version": "2.9.0",
+  "scan": {
+    "details": "Look for user validation errors due to special characters in the user upgrade logs",
+    "steps": [
+      "Read user-upgrade.log'",
+      "Look for lines containing \"Error in validating user: Allowed special characters in username\"",
+      "Extract the username from lines"
+    ],
+    "privileges": "cvp"
+  },
+  "patch": {
+    "details": "Remove usernames with invalid characters from the aeris database.",
+    "steps": [
+      "Stop aeris",
+      "Start aeris",
+      "Remove the username path contents",
+      "Remove username from the user list",
+      "Start CVP"
+    ],
+    "privileges": "cvp",
+    "component_requirements": "apiserver"
+  }
+}

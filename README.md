@@ -13,7 +13,7 @@ Required privileges: cvp
 
 
 
-# ambassador_expired_certs.py - Ambassador cert issues *(v1.1.0)*
+# ambassador_expired_certs.py - Ambassador cert issues *(v1.2.0)*
 
 ## Description
 Invalid or mismatching ambassador certificates.
@@ -43,7 +43,7 @@ Required privileges: cvp
 
 
 
-# apish_eventsubscriber.py - Incorrect eventSubscriber entries *(v1.0.1)*
+# apish_eventsubscriber.py - Incorrect eventSubscriber entries *(v1.1.0)*
 
 ## Description
 Certificate upload fails due to stale entries in the database.
@@ -67,7 +67,7 @@ Required privileges: cvp
 
 
 
-# apish_ztpmode.py - Incorrect ZtpMode setting for provisioned devices *(v1.0.1)*
+# apish_ztpmode.py - Incorrect ZtpMode setting for provisioned devices *(v1.1.0)*
 
 ## Description
 Certain scenarios can lead to ZtpMode being set to "true" for provisioned devices at various paths in the NetDb
@@ -258,6 +258,24 @@ Required privileges: cvp
 
 
 
+# cvp_files_mismatch.py - File checksum mismatch *(v1.1.0)*
+
+## Description
+Different key file contents
+
+## Conditions
+
+## Action Details
+### <u>Scan</u>
+Details: Checks and compares the checksum of key file contents. Key files are: /etc/cvpi/env, /etc/cvpi/cvpi.key, /cvpi/tls/certs/aerisadmin.crt, /cvpi/tls/certs/ca.crt, /cvpi/tls/certs/saml.crt
+#### Steps:
+1. Store file checksum from all nodes
+2. Compare file checksums
+
+Required privileges: cvp
+
+
+
 # cvp_image_missingdefault.py - Missing images in CVP *(v1.0.3)*
 
 ## Description
@@ -334,7 +352,7 @@ Required privileges: cvp
 
 
 
-# cvpi_status.py - CVPI Status *(v1.0.3)*
+# cvpi_status.py - CVPI Status *(v1.1.0)*
 
 ## Description
 Loads CVPI components statuses.
@@ -678,5 +696,38 @@ Required privileges: cvp
 
 ### <u>Patch</u>
 No patch is available. This is an informational message and further debugging will be needed by the TAC team.
+
+
+
+# user_invalid_characters.py - Invalid characters in usernames *(v1.1.0)*
+
+## Description
+Invalid characters in usernames.
+
+## Conditions
+> Bug ID: [662346](https://bb/662346) ([public link](https://www.arista.com/en/support/software-bug-portal/bugdetail?bug_id=662346))<br />
+> Introduced in: 2020.3.0<br />
+> Internal Links: [https://sites.google.com/arista.com/cvp-tac/troubleshooting/troubleshooting-fastupgrade-failures/upgrading-to-2021-3](https://sites.google.com/arista.com/cvp-tac/troubleshooting/troubleshooting-fastupgrade-failures/upgrading-to-2021-3)<br />
+
+## Action Details
+### <u>Scan</u>
+Details: Look for user validation errors due to special characters in the user upgrade logs
+#### Steps:
+1. Read user-upgrade.log'
+2. Look for lines containing "Error in validating user: Allowed special characters in username"
+3. Extract the username from lines
+
+Required privileges: cvp
+
+### <u>Patch</u>
+Remove usernames with invalid characters from the aeris database.
+#### Steps:
+1. Stop aeris
+2. Start aeris
+3. Remove the username path contents
+4. Remove username from the user list
+5. Start CVP
+
+Required privileges: cvp
 
 

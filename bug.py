@@ -1,4 +1,3 @@
-from fileinput import filename
 import getpass
 import json
 import re
@@ -40,7 +39,8 @@ class Bug(object):
       debuglogdir = None,
       description = None,
       logsfrom = None,
-      name = None
+      name = None,
+      timeout = None
     )
 
     self.set_status(
@@ -183,11 +183,17 @@ class Bug(object):
       if elements[element]['type'] == 'pod' or elements[element]['type'] == 'pods':
         if elements[element].get('Init Containers'):
           for container in elements[element].get('Init Containers'):
-            if (elements[element]['Init Containers'][container]['State']['value'] != 'Running' and elements[element]['Init Containers'][container]['State']['Reason'] == filter) or elements[element]['Init Containers'][container]['State']['value'] == filter or elements[element]['Status'] == filter:
-              resources[container] = elements[element]
+            try:
+              if (elements[element]['Init Containers'][container]['State']['value'] != 'Running' and elements[element]['Init Containers'][container]['State']['Reason'] == filter) or elements[element]['Init Containers'][container]['State']['value'] == filter or elements[element]['Status'] == filter:
+                resources[container] = elements[element]
+            except KeyError as error_message:
+              raise RuntimeError("Error reading %s attributes: %s" %(container, error_message))
         for container in elements[element].get('Containers'):
-          if (elements[element]['Containers'][container]['State']['value'] != 'Running' and elements[element]['Containers'][container]['State']['Reason'] == filter) or elements[element]['Containers'][container]['State']['value'] == filter or elements[element]['Status'] == filter:
-            resources[container] = elements[element]
+          try:
+            if (elements[element]['Containers'][container]['State']['value'] != 'Running' and elements[element]['Containers'][container]['State']['Reason'] == filter) or elements[element]['Containers'][container]['State']['value'] == filter or elements[element]['Status'] == filter:
+              resources[container] = elements[element]
+          except KeyError as error_message:
+            raise RuntimeError("Error reading %s attributes: %s" %(container, error_message))
 
     self.debug(resources, code.LOG_JEDI)
     return(resources)
@@ -303,7 +309,7 @@ class Bug(object):
 
   def __run_local_command(self, command):
     #Runs a command on the current host and returns the stdout and stderr
-    self.debug(command, code.LOG_JEDI)
+    self.debug("Running local command %s" %command, code.LOG_JEDI)
     stdout = None
     stderr = None
     try:
@@ -322,12 +328,20 @@ class Bug(object):
 
     return([stdout, stderr, exit_code])
 
-  def __run_remote_command(self, command, connection=None):
+  def __run_remote_command(self, command, connection=None, timeout=None):
     #Runs a command over a SSH connection and returns the stdout and stderr
-    self.debug(command, code.LOG_JEDI)
+    if self.config.get('timeout') and not timeout:
+      command = 'timeout %s %s' %(self.config['timeout'], command)
+      timeout = self.config.get('timeout')
+    elif timeout == 'inf':
+      timeout = None
+    elif timeout:
+      command = 'timeout %s %s' %(timeout, command)
+
+    self.debug("Running remote command %s" %command, code.LOG_JEDI)
     if connection:
       try:
-        stdin, stdout, stderr = connection.exec_command(command)
+        stdin, stdout, stderr = connection.exec_command(command, timeout=timeout)
         exit_code = stdout.channel.recv_exit_status()
       except Exception as e:
         self.debug("Could not run %s: %s" %(command, e), code.LOG_ERROR)
@@ -413,6 +427,7 @@ class Bug(object):
     self,
     filecache=None,
     bootstrap=False,
+    cluster_store=None,
     connection=None,
     debug_level=None,
     debugcmddir=None,
@@ -423,7 +438,8 @@ class Bug(object):
     metadata_json=None,
     name=None,
     node_config=None,
-    read_files_only_from_last_service_restart=None
+    read_files_only_from_last_service_restart=None,
+    timeout=None
   ):
     """ Set the bug class properties
 
@@ -464,6 +480,8 @@ class Bug(object):
     file = open(bug_json, 'r')
     metadata = json.load(file)
     self.bug_version = metadata['version']
+    if timeout or not self.config.get('timeout'):
+      self.config['timeout'] = timeout
 
     # Extended metadata
     if metadata_json:
@@ -491,6 +509,9 @@ class Bug(object):
       self.config['connection'] = connection
     elif not self.config.get('connection'):
       self.config['connection'] = None
+
+    if cluster_store is not None:
+      self.cluster_store = cluster_store
 
     if filecache:
         self.filecache=filecache
@@ -713,13 +734,13 @@ class Bug(object):
           self.run_command("killall -9 cvpiBoot.sh")
 
         self.debug("Running %s" %command, code.LOG_JEDI)
-        result[service][run] = self.run_command(command, silence_cvpi_warning=True)
+        result[service][run] = self.run_command(command, silence_cvpi_warning=True, timeout='inf')
         self.debug("%s output: %s" %(command, result[service][run].stdout), code.LOG_JEDI)
 
     results = action_result(result)    
 
     if results.failed and not allow_failure:
-      self.debug("Errors while executing actions: %s" %results.failed, code.LOG_ERROR)
+      self.debug("Errors while executing actions: %s" %results.failed, code.LOG_DEBUG)
 
     return(results)
 
@@ -738,7 +759,13 @@ class Bug(object):
     Returns:
         dict: Internal bugcheck configuration parameters.
     """
-    exclude_keys = ['node_config', 'debuglogdir', 'debugcmddir', 'debug']
+    exclude_keys = [
+      'connection',
+      'debug', 
+      'debugcmddir', 
+      'debuglogdir', 
+      'node_config'
+    ]
     r = {}
     r = self.config.copy()
     r['status'] = self.status.copy()
@@ -892,6 +919,18 @@ class Bug(object):
     else:
       return("")
 
+  def post_scan(self):
+    """ Stub post_scan function. Bugchecks should override this if they intend to
+    implement a post_scan() method. post_scan is invoked after scanning is done in all nodes.
+
+    Returns:
+        None: None
+        str: No post_scan action available message
+    """
+    value = None
+    message = 'No post-scan actions defined'
+    return(value, message)
+
   def patch(self, force=False):
     """ Stub patch function. Bugchecks should override this if they intend to
     implement a patch() method.
@@ -924,6 +963,10 @@ class Bug(object):
       user = self.config['patch'].get('privileges')
       if user and getpass.getuser() not in ['root', user]:
         return([False, "User %s cannot patch" %getpass.getuser()])
+      if self.config['patch'].get('component_requirements') and not self.is_using_local_logs():
+        failed_requirements = self.cvpi(action='status', services=[self.config['patch']['component_requirements']]).failed
+        if failed_requirements:
+          return([False, "Not scanning due to running component requirements not met: %s" %failed_requirements])
 
     if self.is_using_local_logs():
       return([False, "Cannot patch while checking debug logs"])
@@ -969,6 +1012,10 @@ class Bug(object):
         user = self.config['scan'].get('privileges')
         if user and (getpass.getuser() not in ['root', user] and self.config['node_config'].get('username') not in ['root', user]):
           return([False, "User %s cannot scan" %getpass.getuser()])
+      if self.config['scan'].get('component_requirements') and not self.is_using_local_logs():
+        failed_requirements = self.cvpi(action='status', services=[self.config['scan']['component_requirements']]).failed
+        if failed_requirements:
+          return([False, "Not scanning due to running component requirements not met: %s" %failed_requirements])
 
     if self.config.get('conditions'):
       if len(self.config['conditions']) > 0:
@@ -1058,7 +1105,7 @@ class Bug(object):
       self.debug("Formatted regex search: %s" %grep, code.LOG_JEDI)
 
     try:
-      if self.is_using_local_logs:
+      if self.is_using_local_logs():
         if grep:
           output = self.filecache.get(filename=filename, filter_string=grep)
         else:
@@ -1111,7 +1158,7 @@ class Bug(object):
     self.debug(output, code.LOG_JEDIMASTER)
     return(output)
 
-  def run_command(self, command, silence_cvpi_warning=False, cacheable=False, all_nodes=False):
+  def run_command(self, command, silence_cvpi_warning=False, cacheable=False, all_nodes=False, timeout=None):
     """ Runs a command on the current node. This should be used only when running a
     live check.
 
@@ -1181,6 +1228,9 @@ class Bug(object):
     if 'cat ' in command:
       warn("Please consider using the read_file() method", DeprecationWarning, stacklevel=2)
 
+    if self.is_using_local_logs():
+      target_host = '%--LOCAL--%'
+
     self.debug("Running command %s" %command, code.LOG_DEBUG)
     self.debug("Target Host: %s" %target_host, code.LOG_JEDI)
     self.debug("Local Host: %s" %current_host, code.LOG_JEDI)
@@ -1190,7 +1240,7 @@ class Bug(object):
     if (cacheable and retval == False) or not cacheable:
       start = timer()
       if cacheable:
-        self.filecache.lock(filename)
+        self.filecache.lock(filename=command)
 
       cmdresult = {}
       if all_nodes:
@@ -1200,16 +1250,16 @@ class Bug(object):
             stdout, stderr, exit_code = self.__run_local_command(command)
           else:
             self.debug("Running command on %s (connection: %s)" %(member.get_name(), member.config.get('connection')), code.LOG_DEBUG)
-            stdout, stderr, exit_code = self.__run_remote_command(command, connection=member.config.get('connection'))
+            stdout, stderr, exit_code = self.__run_remote_command(command, connection=member.config.get('connection'), timeout=timeout)
           cmdresult[member.get_name()] = {}
           cmdresult[member.get_name()]['stdout'] = stdout
           cmdresult[member.get_name()]['stderr'] = stderr
           cmdresult[member.get_name()]['exit_code'] = exit_code
       else:
-        if (target_host == current_host or not target_host) and not force_ssh:
+        if (target_host == current_host or not target_host or target_host == '%--LOCAL--%') and not force_ssh:
           stdout, stderr, exit_code = self.__run_local_command(command)
         else:
-          stdout, stderr, exit_code = self.__run_remote_command(command, connection=self.config.get('connection'))
+          stdout, stderr, exit_code = self.__run_remote_command(command, connection=self.config.get('connection'), timeout=timeout)
         cmdresult[target_host] = {}
         cmdresult[target_host]['stdout'] = stdout
         cmdresult[target_host]['stderr'] = stderr
@@ -1221,7 +1271,7 @@ class Bug(object):
       elapsed = timedelta(microseconds=end-start)
       if cacheable:
         self.filecache.put(filename=command, contents=retval)
-        self.filecache.unlock(filename)
+        self.filecache.unlock(filename=command)
         self.debug("Cached command output after %sus" %elapsed, code.LOG_JEDI)
     else:
       self.debug("Retrieved %s contents from %s: %s" %(command, self.filecache, retval), code.LOG_DEBUG)
@@ -1230,6 +1280,30 @@ class Bug(object):
       self.debug("Command %s returned errors: %s" %(command, retval.stderr), code.LOG_DEBUG)
 
     return(retval)
+
+  def save_cluster_value(self, value, keyname=None):
+    '''Saves a cluster-wide accessible value'''
+    retval = False
+    if self.config.get('name'):
+      if not keyname:
+        keyname = self.config['name']
+      self.debug("Storing %s key %s: %s" %(self.get_node_role(), keyname, value), code.LOG_DEBUG)
+      self.cluster_store.save(node=self.get_node_role(), key=keyname, value=value)
+    return retval
+
+  def get_cluster_values(self, keyname=None):
+    class Return_Value:
+      def __init__(self, primary=None, secondary=None, tertiary=None):
+        self.primary=primary
+        self.secondary=secondary
+        self.tertiary=tertiary
+    retval = Return_Value()
+    if not keyname:
+      keyname=self.config.get('name')
+    retval.primary = self.cluster_store.primary.get(keyname)
+    retval.secondary = self.cluster_store.secondary.get(keyname)
+    retval.tertiary = self.cluster_store.tertiary.get(keyname)
+    return retval
 
   def scan(self):
     """ Stub scan() method. This MUST be overriden by the bugcheck otherwise it will

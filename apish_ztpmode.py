@@ -70,7 +70,9 @@ class apish_ztpmode(Bug):
                 sysdb_ztpstatus_output = self.apish('get', device, '/Sysdb/zerotouch/status', action=None, key=None)
                 if sysdb_ztpstatus_output:
                     sysdb_ztpstatus_output = json.loads(sysdb_ztpstatus_output[0])
-                    sysdb_ztpstatus_output = sysdb_ztpstatus_output['Notifications'][0]['updates']
+                    for notif in sysdb_ztpstatus_output['Notifications']:
+                        if 'enabled' in notif['updates'].keys():
+                            sysdb_ztpstatus_output = notif['updates']
                 else:
                     sysdb_ztpstatus_output = None
 

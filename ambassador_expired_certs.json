@@ -12,7 +12,7 @@
     "ambassador",
     "certificates"
   ],
-  "version": "1.1.0",
+  "version": "1.2.0",
   "bug_engine_version": "2.5.0",
   "scan": {
     "details": "Checks for not yet valid, expired or mismatching ambassador certificates and secrets.",

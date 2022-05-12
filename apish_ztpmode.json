@@ -23,14 +23,16 @@
     "ztp",
     "apish"
   ],
-  "version": "1.0.1",
-  "bug_engine_version": "2.0.0",
+  "version": "1.1.0",
+  "bug_engine_version": "2.9.0",
   "scan": {
     "details": "Reads the /provisioning/device/ids and /ztpService/status/device/ids paths in the 'cvp' dataset to find devices with ZtpMode set to true where the ParentContainerKey value is not equal to 'undefined_container'",
-    "privileges": "cvp"
+    "privileges": "cvp",
+    "component_requirements": "apiserver"
   },
   "patch": {
     "details": "Rewrites key values for affected devices in scanned paths to set ZtpMode to false",
-    "privileges": "cvp"
+    "privileges": "cvp",
+    "component_requirements": "apiserver"
   }
 }
