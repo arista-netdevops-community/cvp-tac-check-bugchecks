@@ -32,7 +32,7 @@ class hbase_stuck_operations(Bug):
     elif not logfile and role == 'tertiary':
       pass
     else:
-      logfile = self.read_file(logfile)
+      logfile = self.read_file(logfile, grep='STUCK')
       for line in logfile:
         if 'STUCK' in line:
           value = code.ERROR

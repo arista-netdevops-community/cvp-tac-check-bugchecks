@@ -110,8 +110,22 @@ class cvpi_resources(Bug):
 
   def __scan_node(self):
     config = {}
-    resources = self.run_command("cvpi resources --yaml", silence_cvpi_warning=True, cacheable=True).stdout
-    resources = yaml.safe_load('\n'.join(resources))
+
+    try:
+      if self.get_node_role() == 'primary':
+        resources = self.get_cluster_values(keyname='cvpi_resources').primary
+      elif self.get_node_role() == 'secondary':
+        resources = self.get_cluster_values(keyname='cvpi_resources').secondary
+      elif self.get_node_role() == 'tertiary':
+        resources = self.get_cluster_values(keyname='cvpi_resources').tertiary
+    except Exception:
+      self.debug("No stored values found for the %s node" %self.get_node_role(), code.LOG_DEBUG)
+
+    if not resources:
+      resources = self.run_command("cvpi resources --yaml", silence_cvpi_warning=True, cacheable=True).stdout
+      resources = yaml.safe_load('\n'.join(resources))
+      self.save_cluster_value(resources)
+
     if resources:
       for resource in resources:
         if resource['node'] == self.get_node_role():
@@ -140,6 +154,10 @@ class cvpi_resources(Bug):
             value = v
           elif key == 'time':
             value = value[key]['time']
+          elif key == 'rootspace':
+            v = {}
+            v['available'] = value[key]['avail']
+            v['total'] = value[key]['total']
           else:
             print("FIXME: " + key)
 

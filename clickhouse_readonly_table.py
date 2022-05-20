@@ -112,7 +112,7 @@ class clickhouse_readonly_table(Bug):
 
                             self.debug("Trying to reattach %s.%s" %(org, table), code.LOG_WARNING)
                             if self.cvp_is('>=', '2021.0.0'):
-                                command = "kubectl exet -ti clickhouse-0 -- bash -c 'HOME=/tmp; clickhouse client --host 127.0.0.1 --port 17000 --query \"DETACH TABLE %s.%s ON CLUSTER default\"'" %(org, table)
+                                command = "kubectl exec -ti clickhouse-0 -- bash -c 'HOME=/tmp; clickhouse client --host 127.0.0.1 --port 17000 --query \"DETACH TABLE %s.%s ON CLUSTER default\"'" %(org, table)
                             else:
                                 command = "/cvpi/clickhouse/bin/clickhouse client --host 127.0.0.1 --port 17000 --query \"DETACH TABLE %s.%s ON CLUSTER default\"'" %(org, table)
                             result = self.run_command(command)
@@ -122,7 +122,7 @@ class clickhouse_readonly_table(Bug):
                                 self.debug("Continuing anyway...", code.LOG_WARNING)
 
                             if self.cvp_is('>=', '2021.0.0'):
-                                command = "kubectl exet -ti clickhouse-0 -- bash -c 'HOME=/tmp; clickhouse client --host 127.0.0.1 --port 17000 --query \"ATTACH TABLE %s.%s ON CLUSTER default\"'" %(org, table)
+                                command = "kubectl exec -ti clickhouse-0 -- bash -c 'HOME=/tmp; clickhouse client --host 127.0.0.1 --port 17000 --query \"ATTACH TABLE %s.%s ON CLUSTER default\"'" %(org, table)
                             else:
                                 command = "/cvpi/clickhouse/bin/clickhouse client --host 127.0.0.1 --port 17000 --query \"ATTACH TABLE %s.%s ON CLUSTER default\"'" %(org, table)
                             result = self.run_command(command)

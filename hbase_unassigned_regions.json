@@ -9,7 +9,7 @@
     "hbase"
   ],
   "version": "2.0.4",
-  "bug_engine_version": "2.4.0",
+  "bug_engine_version": "2.5.3",
   "scan": {
     "details": "Checks if there are unassigned regions on hbase.",
     "privileges": "cvp"

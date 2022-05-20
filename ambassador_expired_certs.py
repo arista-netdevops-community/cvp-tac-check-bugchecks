@@ -78,7 +78,8 @@ class ambassador_expired_certs(Bug):
         message = None
 
         if not self.is_using_local_logs():
-            value, message = self.scan_remote()
+            if self.get_node_role() == 'primary':
+                value, message = self.scan_remote()
 
         if value == code.OK:
             if self.is_using_local_logs():

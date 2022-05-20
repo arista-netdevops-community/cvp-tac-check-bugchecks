@@ -19,12 +19,18 @@ class apish_ztpmode(Bug):
         return (value, message)
 
     def _get_provisioned_devices(self):
-        device_output = json.loads(self.apish('get', 'cvp', '/provisioning/device/ids', action=None, key=None)[0])
-        for item in device_output['Notifications']:
-            # the structure of this output is such that we expect 1 key under 'updates' for each item in the
-            # Notifications array where the key value is the device ID
-            for key in item['updates'].keys():
-                self._devices.append(key)
+        try:
+            apish_result = self.apish('get', 'cvp', '/provisioning/device/ids', action=None, key=None)[0]
+        except Exception:
+            apish_result = None
+
+        if apish_result:
+            device_output = json.loads(apish_result)
+            for item in device_output['Notifications']:
+                # the structure of this output is such that we expect 1 key under 'updates' for each item in the
+                # Notifications array where the key value is the device ID
+                for key in item['updates'].keys():
+                    self._devices.append(key)
 
     def _check_provisioned_devices(self):
         for device in self._devices:

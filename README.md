@@ -13,7 +13,7 @@ Required privileges: cvp
 
 
 
-# ambassador_expired_certs.py - Ambassador cert issues *(v1.2.0)*
+# ambassador_expired_certs.py - Ambassador cert issues *(v1.2.1)*
 
 ## Description
 Invalid or mismatching ambassador certificates.
@@ -67,7 +67,7 @@ Required privileges: cvp
 
 
 
-# apish_ztpmode.py - Incorrect ZtpMode setting for provisioned devices *(v1.1.0)*
+# apish_ztpmode.py - Incorrect ZtpMode setting for provisioned devices *(v1.1.1)*
 
 ## Description
 Certain scenarios can lead to ZtpMode being set to "true" for provisioned devices at various paths in the NetDb
@@ -152,7 +152,7 @@ Required privileges: root
 
 
 
-# clickhouse_readonly_table.py - Readonly tables in clickhouse *(v2.0.0)*
+# clickhouse_readonly_table.py - Readonly tables in clickhouse *(v2.0.1)*
 
 ## Description
 Clickhouse fails to start and clover cannot initialize schema due to readonly tables.
@@ -339,7 +339,7 @@ No patch is available. This is an informational message and further debugging wi
 
 
 
-# cvpi_resources.py - CVPI Resources *(v1.0.5)*
+# cvpi_resources.py - CVPI Resources *(v2.1.0)*
 
 ## Description
 Loads CVPI resources.
@@ -365,13 +365,14 @@ Required privileges: cvp
 
 
 
-# docker_cgroup.py - Docker cgroup memory allocation failure *(v2.0.2)*
+# docker_cgroup.py - Docker cgroup memory allocation failure *(v2.0.3)*
 
 ## Description
 Docker containers failing to start with cgroup memory allocation error.
 
 ## Conditions
 > Bug ID: [550147](https://bb/550147) ([public link](https://www.arista.com/en/support/software-bug-portal/bugdetail?bug_id=550147))<br />
+> Fixed in: 2021.3.0<br />
 > Links: [https://www.arista.com/en/support/software-bug-portal/bugdetail?bug_id=550147](https://www.arista.com/en/support/software-bug-portal/bugdetail?bug_id=550147), [https://github.com/docker/for-linux/issues/841](https://github.com/docker/for-linux/issues/841)<br />
 > Internal Links: [https://sites.google.com/arista.com/cvp-tac/uncommon-issues/pods-fail-to-start-due-to-cgroup-memory-allocation-error](https://sites.google.com/arista.com/cvp-tac/uncommon-issues/pods-fail-to-start-due-to-cgroup-memory-allocation-error)<br />
 
@@ -421,7 +422,7 @@ Required privileges: cvp
 
 
 
-# hbase_corrupted_procedures.py - HBase corrupted procedures *(v1.0.3)*
+# hbase_corrupted_procedures.py - HBase corrupted procedures *(v1.1.0)*
 
 ## Description
 Corrupted procedures in HBase WAL files.
@@ -477,7 +478,7 @@ Required privileges: root
 
 
 
-# hbase_stuck_operations.py - HBase stuck operations *(v1.0.3)*
+# hbase_stuck_operations.py - HBase stuck operations *(v1.1.0)*
 
 ## Description
 HBase operations in STUCK state.

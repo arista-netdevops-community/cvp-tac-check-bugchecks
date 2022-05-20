@@ -32,7 +32,7 @@ class hbase_corrupted_procedures(Bug):
     elif not logfile and role == 'tertiary':
       pass
     else:
-      logfile = self.read_file(logfile)
+      logfile = self.read_file(logfile, grep='corrupted procedures')
       for line in logfile:
         if 'corrupted procedures' in line:
           value = code.ERROR

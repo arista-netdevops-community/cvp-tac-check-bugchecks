@@ -5,8 +5,8 @@
     "cvp",
     "cvpi"
   ],
-  "version": "1.0.5",
-  "bug_engine_version": "2.5.0",
+  "version": "2.1.0",
+  "bug_engine_version": "2.9.2",
   "scan": {
     "details": "Loads CVPI resources and saves them to self['status']['extra']. This is intended to be extended by other bugchecks that need to check those values.",
     "privileges": "cvp"
