@@ -29,7 +29,8 @@ class cvp_files_mismatch(Bug):
             for file in self.file_list:
                 try:
                     checksum[file] = self.run_command("md5sum %s|awk '{print $1}'" %file).stdout[0]
-                except IOError:
+                except Exception as error_message:
+                    self.debug("Error getting checksum for %s: %s" %(file, error_message), code.LOG_DEBUG)
                     checksum[file] = None
             self.save_cluster_value(checksum)
 

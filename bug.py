@@ -1,14 +1,18 @@
+import base64
 import getpass
 import json
 import re
 import os
 import socket
 import subprocess
+import tempfile
 import time
 from OpenSSL import crypto
 from warnings import warn
 from datetime import timedelta, datetime
 from timeit import default_timer as timer
+
+import yaml
 import lib.return_codes as code
 from lib.debugger import Debugger
 
@@ -49,54 +53,197 @@ class Bug(object):
       has_run=False
     )
 
-  class certificates:
+  def certificates(self):
+    retval = self.__certificates(self)
+    return(retval)
+
+  class __certificates:
     """This class encapsulates certificate operations"""
     class certificate:
-      def __init__(self, file):
-        self.content = open(file).read()
+      def __init__(self, cert, type='file'):
+        if type == 'file':
+          with open(cert) as file:
+            self.contents = file.read()
+        elif type == 'contents':
+          self.contents = cert
 
-        certificate = crypto.load_certificate(crypto.FILETYPE_PEM, self.content)
+        certificate = crypto.load_certificate(crypto.FILETYPE_PEM, self.contents)
         date_format, encoding = "%Y%m%d%H%M%SZ", "ascii"
 
         self.start_date = datetime.strptime(certificate.get_notBefore().decode(encoding), date_format)
         self.end_date = datetime.strptime(certificate.get_notAfter().decode(encoding), date_format)
         self.fingerprint = certificate.digest('sha1')
+        self.certificate = certificate
 
-    def __init__(self):
+      def verify(self, ca_cert):
+        try:
+          store = crypto.X509Store()
+          store.add_cert(ca_cert.certificate)
+          store_ctx = crypto.X509StoreContext(store, self.certificate)
+          result = store_ctx.verify_certificate()
+        except AttributeError:
+          with tempfile.NamedTemporaryFile(delete=False) as ca_file:
+            with tempfile.NamedTemporaryFile(delete=False) as cert_file:
+              ca_file.write(ca_cert.contents)
+              cert_file.write(self.contents)
+          try:
+            subprocess.check_output(['openssl verify -CAfile %s %s' %(ca_file.name, cert_file.name)], shell=True)
+            result = True
+          except subprocess.CalledProcessError:
+            result = False
+          finally:
+            os.system('rm -f %s %s' %(ca_file.name, cert_file.name))
+        if result:
+          return True
+        else:
+          return False
+
+    def __init__(self, parent):
         self.certificates = {}
+        self.parent = parent
         self.__read_certs()
 
     def __read_certs(self):
       cert_dir = '/cvpi/tls/certs/'
-      certs = os.listdir(cert_dir)
-      for file in [ f for f in certs if f.endswith('.crt')]:
-        self.certificates[file] = self.certificate(cert_dir + file)
+      filesystem_certs = [ f for f in os.listdir(cert_dir) if f.endswith('.crt') or f.endswith('.cert') or f.endswith('.pem')]
+      k8s_tlscerts = self.parent.run_command('kubectl get secrets --field-selector type="kubernetes.io/tls" -oname|cut -f2- -d/').stdout
+      k8s_opaquecerts = self.parent.run_command('kubectl get secrets --field-selector type="Opaque" -oname|cut -f2- -d/').stdout
 
-    def get(self, certname):
+      for file in filesystem_certs:
+        if not self.certificates.get(file):
+          self.certificates[file] = {}
+        try:
+          self.certificates[file]['filesystem'] = self.certificate(cert_dir + file)
+        except Exception as error_message:
+          self.parent.debug("Could not load certificate from file %s: %s" %(cert_dir + file, error_message), code.LOG_WARNING)
+
+      for file in k8s_tlscerts:
+        if file == 'ambassador-tls-origin':
+          certname = 'ambassador.crt'
+        else:
+          certname = file
+        if not self.certificates.get(certname):
+          self.certificates[certname] = {}
+        file_contents = '\n'.join(self.parent.run_command("kubectl get secret %s -o 'go-template={{ index .data \"tls.crt\"}}'|base64 -d" %file).stdout).strip()
+        try:
+          self.certificates[certname]['k8s'] = self.certificate(file_contents, type='contents')
+        except Exception as error_message:
+          self.parent.debug("Could not load certificate %s from secret %s: %s" %(certname, file, error_message), code.LOG_WARNING)
+      for file in k8s_opaquecerts:
+        file_contents = '\n'.join(self.parent.run_command("kubectl get secret %s -o yaml" %file).stdout)
+        file_contents = yaml.safe_load(file_contents)
+        for certname in [k for k in file_contents['data'].keys() if k.endswith('.crt') or k.endswith('.cert') or k.endswith('.pem')]:
+          if not self.certificates.get(certname):
+            self.certificates[certname] = {}
+          try:
+            file_contents = base64.b64decode(file_contents['data'][certname])
+          except Exception as error_message:
+            self.parent.debug("Could not decode %s from secret %s: %s" %(certname, file, error_message), code.LOG_WARNING)
+          else:
+            try:
+              self.certificates[certname]['k8s'] = self.certificate(file_contents, type='contents')
+            except Exception as error_message:
+              self.parent.debug("Could not load certificate %s from secret %s: %s" %(certname, file, error_message), code.LOG_WARNING)
+
+    def get(self, certname, source=None):
       cert = self.certificates.get(certname)
+      if cert and not source:
+        cert = self.certificates[certname].get('k8s')
+        if not cert:
+          cert = self.certificates[certname].get('filesystem')
+      elif cert and source:
+        cert = self.certificates[certname].get(source)
       return cert
 
     def list(self):
       certs = list(self.certificates.keys())
       return certs
 
-    def is_valid(self, certname):
-      retval = False
-      if self.certificates.get(certname):
-        if datetime.now() > self.certificates[certname].start_date and datetime.now() < self.certificates[certname].end_date:
-          retval = True
-      else:
-        raise(RuntimeError('Certificate %s not found' %certname))
+    def sources(self, cert):
+      retval = self.certificates.get(cert)
+      if retval:
+        retval = retval.keys()
       return retval
 
-    def is_close_to_expiration(self, certname, days=30):
+    def is_close_to_expiration(self, cert_name, source='filesystem', days=30):
       retval = True
-      if self.certificates.get(certname):
-        threshold = self.certificates[certname].end_date - timedelta(days=days)
-        if datetime.now() < threshold:
-          retval = False
+      if self.certificates.get(cert_name):
+        if self.certificates[cert_name].get(source):
+          threshold = self.certificates[cert_name][source].end_date - timedelta(days=days)
+          if datetime.now() < threshold:
+            retval = False
       else:
-        raise(RuntimeError('Certificate %s not found' %certname))
+        raise(RuntimeError('Certificate %s not found' %cert_name))
+      return retval
+
+    def cert_is_expired(self, cert_name, source='filesystem'):
+      retval = True
+      if self.certificates.get(cert_name):
+        if self.certificates[cert_name].get(source):
+          if datetime.now() < self.certificates[cert_name][source].end_date:
+            retval = False
+      else:
+        raise(RuntimeError('Certificate %s not found' %cert_name))
+      self.parent.debug("%s (%s) is expired: %s" %(cert_name, source, retval), code.LOG_JEDI)
+      return retval
+
+    def cert_starts_in_future(self, cert_name, source='filesystem'):
+      retval = True
+      if self.certificates.get(cert_name):
+        if self.certificates[cert_name].get(source):
+          if datetime.now() > self.certificates[cert_name][source].start_date:
+            retval = False
+      else:
+        raise(RuntimeError('Certificate %s not found' %cert_name))
+      self.parent.debug("%s (%s) starts in future: %s" %(cert_name, source, retval), code.LOG_JEDI)
+      return retval
+
+    def cert_chain_is_valid(self, cert_name, source='filesystem'):
+      retval = True
+      if self.certificates.get('ca.crt') and self.certificates.get(cert_name):
+        retval = self.certificates[cert_name][source].verify(self.get('ca.crt'))
+      else:
+        raise(RuntimeError('Certificate %s or ca.crt not found' %cert_name))
+      self.parent.debug("%s (%s) chain is valid: %s" %(cert_name, source, retval), code.LOG_JEDI)
+      return retval
+
+    def certs_are_similar(self, cert_a_name, cert_b_name, cert_a_source='filesystem', cert_b_source='filesystem'):
+      retval = False
+      if self.certificates.get(cert_a_name) and self.certificates.get(cert_b_name):
+        if self.certificates[cert_a_name].get(cert_a_source) and self.certificates[cert_b_name].get(cert_b_source):
+          if self.certificates[cert_a_name][cert_a_source].fingerprint == self.certificates[cert_b_name][cert_b_source].fingerprint:
+            retval = True
+      else:
+        raise(RuntimeError('Certificate %s or %s not found' %(cert_a_name, cert_b_name)))
+      self.parent.debug("%s (%s) is similar to %s (%s): %s" %(cert_a_name, cert_a_source, cert_b_name, cert_b_source, retval), code.LOG_JEDI)
+      return retval
+
+    def is_valid(self, certname, validate_chain=True, validate_startdate=True, validate_expiration=True, validate_sources=True):
+      class result:
+        def __init__(self):
+            self.result = True
+            self.failed = []
+      
+      retval = result()
+      for source in self.sources(certname):
+        if validate_expiration:
+          if self.cert_is_expired(certname, source):
+            retval.result = False
+            retval.failed.append('expiration date (%s)' %source)
+          elif self.is_close_to_expiration(certname, source):
+            retval.result = False
+            retval.failed.append('close to expiration (%s)' %source)
+        if validate_startdate and self.cert_starts_in_future(certname, source):
+          retval.result = False
+          retval.failed.append('start date (%s)' %source)
+        if validate_chain and not self.cert_chain_is_valid(certname, source):
+          retval.result = False
+          retval.failed.append('invalid chain (%s)' %source)
+      if validate_sources and len(self.sources(certname)) == 2:
+        if not self.certs_are_similar(cert_a_name=certname, cert_a_source='filesystem', cert_b_name=certname, cert_b_source='k8s'):
+          retval.result = False
+          retval.failed.append('k8s secret and cert file contents are different')
+      self.parent.debug("%s validation result: %s" %(certname, retval.result), code.LOG_DEBUG)
       return retval
 
   def __filter_logs(self, lines, filename=None):
@@ -497,9 +644,9 @@ class Bug(object):
       if self.config.get('bug_engine_version'):
         version_requirement = self.config['bug_engine_version'].split('.')
         current_version = self.bug_version.split('.')
-        if version_requirement[0] != current_version[0]:
+        if int(version_requirement[0]) != int(current_version[0]):
           raise(RuntimeError('This bugcheck requires Bug %s.x.x (currently using %s)' %(version_requirement[0], self.bug_version)))
-        elif version_requirement[1] > current_version[1]:
+        elif int(version_requirement[1]) > int(current_version[1]):
           raise(RuntimeError('This bugcheck requires Bug %s.%s.x (currently using %s)' %(version_requirement[0], version_requirement[1], self.bug_version)))
       else:
         raise(RuntimeError("No bug_engine_version declared. Refusing to load."))

@@ -13,36 +13,6 @@ Required privileges: cvp
 
 
 
-# ambassador_expired_certs.py - Ambassador cert issues *(v1.2.1)*
-
-## Description
-Invalid or mismatching ambassador certificates.
-
-## Conditions
-> Bug ID: [666794](https://bb/666794) ([public link](https://www.arista.com/en/support/software-bug-portal/bugdetail?bug_id=666794))<br />
-
-## Action Details
-### <u>Scan</u>
-Details: Checks for not yet valid, expired or mismatching ambassador certificates and secrets.
-#### Steps:
-1. Check /etc/cvpi/tls/certs/ambassador.crt (live only)
-2. Check ambassador-tls-origin secret (live only)
-3. Compare the certificate and secret contents (live only)
-4. Check log files for error messages caused by expired ambassador certificates
-
-Required privileges: cvp
-
-### <u>Patch</u>
-Recreate ambassador certificate and secret.
-#### Steps:
-1. Reset ambassador
-2. Init ambassador
-3. Start all CVP components
-
-Required privileges: cvp
-
-
-
 # apish_eventsubscriber.py - Incorrect eventSubscriber entries *(v1.1.0)*
 
 ## Description
@@ -67,7 +37,7 @@ Required privileges: cvp
 
 
 
-# apish_ztpmode.py - Incorrect ZtpMode setting for provisioned devices *(v1.1.1)*
+# apish_ztpmode.py - Incorrect ZtpMode setting for provisioned devices *(v1.1.2)*
 
 ## Description
 Certain scenarios can lead to ZtpMode being set to "true" for provisioned devices at various paths in the NetDb
@@ -98,17 +68,17 @@ Required privileges: cvp
 
 
 
-# cert_expiration.py - Expired Certificates *(v2.0.0)*
+# cert_issues.py - Invalid Certificates *(v1.0.0)*
 
 ## Description
-Expired CVP backend certificates
+Invalid CVP backend certificates
 
 ## Conditions
 > Internal Links: [https://sites.google.com/arista.com/cvp-tac/uncommon-issues/components-cannot-come-up-due-to-expired-aeris-certificate-bug591049](https://sites.google.com/arista.com/cvp-tac/uncommon-issues/components-cannot-come-up-due-to-expired-aeris-certificate-bug591049)<br />
 
 ## Action Details
 ### <u>Scan</u>
-Details: Checks if backend certificates (`/cvpi/tls/certs/server.crt`, `/cvpi/tls/certs/aerisadmin.crt` and `/cvpi/tls/certs/ca.crt`) have expired or will expire within the next 30 days.
+Details: Checks if backend certificates have expired or will expire within the next 30 days, don't have start dates in the future, have a valid cert chain and the certificate file in the filesystem is the same as the cert loaded into kubernetes.
 
 If checking logs we look for pods in the `crashloopbackoff` state and compare it to a list of components that are known to fail if certificates have expired: `aaa`, `aeris-ccapi`, `audit`, `ccapi`, `cloudmanager`, `enroll`, `image`, `inventory`, `snapshot`, `ztp`. If the crashed components match this list, then we indicate that with an error message.
 
@@ -258,7 +228,7 @@ Required privileges: cvp
 
 
 
-# cvp_files_mismatch.py - File checksum mismatch *(v1.1.0)*
+# cvp_files_mismatch.py - File checksum mismatch *(v1.1.1)*
 
 ## Description
 Different key file contents

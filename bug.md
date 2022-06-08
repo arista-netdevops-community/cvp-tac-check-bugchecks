@@ -7,6 +7,11 @@
 - `local_logs_directory()` will be removed.
 
 # Bug() changelog
+## 2.10.0
+- certificates() supports getting certificates from kubernetes
+- certificates.is_valid now support different verifications: expiration date, start date, certificate chain and comparison between k8s and filesystem certificates.
+- Fixed a bug where checking the bug engine version might fail
+
 ## 2.9.4
 - Fix running commands when reading debug logs
 

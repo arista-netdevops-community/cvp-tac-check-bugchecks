@@ -1,3 +1,4 @@
+# pylint: disable=invalid-name, useless-super-delegation, missing-class-docstring, line-too-long
 # standard imports
 import json
 
@@ -53,7 +54,7 @@ class apish_ztpmode(Bug):
 
             if provisioning_output['ParentContainerKey'] != "undefined_container":
                 # ztpmode is true and device is not in the undefined container, this is always wrong
-                if provisioning_output['ZtpMode']:
+                if provisioning_output.get('ZtpMode'):
                     self.debug("Device ZTP mode in provisioning is true, and should not be", return_codes.LOG_DEBUG)
 
                     # append a tuple of device ID, affected path
@@ -61,7 +62,7 @@ class apish_ztpmode(Bug):
                     self._affected_devices.append((device, '/provisioning/device/ids', False))
 
                 if ztpstatus_output is not None:
-                    if ztpstatus_output['ZtpMode']:
+                    if ztpstatus_output.get('ZtpMode'):
                         self.debug("Device ZTP mode in ztpService path is true, and should not be",
                                    return_codes.LOG_DEBUG)
 

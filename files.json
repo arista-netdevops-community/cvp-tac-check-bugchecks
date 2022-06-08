@@ -12,16 +12,20 @@
     "bug_engine_version": "2.9.0"
   },
   "apish_ztpmode": {
-    "version": "1.1.1",
+    "version": "1.1.2",
     "bug_engine_version": "2.9.0"
   },
   "bug": {
-    "version": "2.9.4",
+    "version": "2.10.0",
     "node_version": "1.0.0"
   },
   "cert_expiration": {
     "version": "2.0.0",
     "bug_engine_version": "2.7.0"
+  },
+  "cert_issues": {
+    "version": "1.0.0",
+    "bug_engine_version": "2.10.0"
   },
   "cert_permissions": {
     "version": "1.0.3",
@@ -48,7 +52,7 @@
     "bug_engine_version": "2.4.0"
   },
   "cvp_files_mismatch": {
-    "version": "1.1.0",
+    "version": "1.1.1",
     "bug_engine_version": "2.8.1"
   },
   "cvp_image_missingdefault": {
@@ -142,5 +146,8 @@
   "user_invalid_characters": {
     "version": "1.1.0",
     "bug_engine_version": "2.9.0"
+  },
+  "_lib_updater": {
+    "version": 1
   }
 }
