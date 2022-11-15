@@ -27,9 +27,9 @@ class Updater:
         if source == 'github':
             self.metadata_address = 'https://raw.githubusercontent.com/arista-netdevops-community/cvp-tac-check-bugchecks/main/files.json'.lower()
         elif metadata_address:
-            self.metadata_address = metadata_address.lower()
+            self.metadata_address = metadata_address
 
-        self.metadata_protocol = self.metadata_address.split(':')[0]
+        self.metadata_protocol = self.metadata_address.split(':')[0].lower()
 
         try:
             self.metadata_port = int(self.metadata_address.split(':')[2].split('/')[0])
@@ -87,8 +87,6 @@ class Updater:
 
     def __load_remote_bugcheck_metadata(self, protocol, address):
         metadata = {}
-        protocol = 'file'
-        address = 'bugchecks-public/files.json'
         if protocol == 'http' or protocol == 'https':
             self.debug("Loading updates json from remote file %s" %address, code.LOG_DEBUG)
             content = requests.get(address, timeout=5, allow_redirects=True).content
