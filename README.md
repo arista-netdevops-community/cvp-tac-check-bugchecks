@@ -1,6 +1,6 @@
 
 
-# alertmanager_notification_errors.py - Failed notifications in alertmanager *(v1.0.0)*
+# alertmanager_notification_errors.py - Failed notifications in alertmanager *(v1.0.1)*
 
 ## Description
 Errors in sending notifications to configured platforms.
@@ -122,7 +122,7 @@ Required privileges: root
 
 
 
-# clickhouse_readonly_table.py - Readonly tables in clickhouse *(v2.0.1)*
+# clickhouse_readonly_table.py - Readonly tables in clickhouse *(v2.0.2)*
 
 ## Description
 Clickhouse fails to start and clover cannot initialize schema due to readonly tables.
@@ -174,7 +174,7 @@ Required privileges: cvp
 
 
 
-# cvp_authentication_unreachable.py - Unreachable Auth Servers *(v1.0.3)*
+# cvp_authentication_unreachable.py - Unreachable Auth Servers *(v1.0.4)*
 
 ## Description
 Configured authentication servers could not be reached.
@@ -190,7 +190,7 @@ No patch is available. This is an informational message and further debugging wi
 
 
 
-# cvp_deadline_exceeded.py - Deadline Exceeded *(v1.0.4)*
+# cvp_deadline_exceeded.py - Deadline Exceeded *(v1.0.5)*
 
 ## Description
 Deadline Exceeded messages in services.
@@ -206,7 +206,7 @@ No patch is available. This is an informational message and further debugging wi
 
 
 
-# cvp_events_userinteraction.py - User Interaction Events not found *(v1.0.0)*
+# cvp_events_userinteraction.py - User Interaction Events not found *(v1.0.1)*
 
 ## Description
 Acknowledging events may not work
@@ -335,7 +335,7 @@ Required privileges: cvp
 
 
 
-# docker_cgroup.py - Docker cgroup memory allocation failure *(v2.0.3)*
+# docker_cgroup.py - Docker cgroup memory allocation failure *(v2.0.4)*
 
 ## Description
 Docker containers failing to start with cgroup memory allocation error.
@@ -654,7 +654,7 @@ No patch is available. This is an informational message and further debugging wi
 
 
 
-# os_oom.py - OOM errors *(v1.0.4)*
+# os_oom.py - OOM errors *(v1.0.5)*
 
 ## Description
 Services killed due to system running out of memory.

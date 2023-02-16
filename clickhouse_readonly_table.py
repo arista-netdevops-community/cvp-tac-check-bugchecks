@@ -24,6 +24,7 @@ class clickhouse_readonly_table(Bug):
         zk_path_regex = r'path: ([\w\/.]*)'
         zk_table_regex = r'in query:.*INTO \"(\w+)\"\.\"(\w+)'
         issues = {}
+        diagnostic_files = []
 
         if self.is_using_local_logs():
             logfile = self.local_directory(directory_type='logs')+'/clickhouse/clickhouse-server.err.log'
@@ -31,6 +32,7 @@ class clickhouse_readonly_table(Bug):
             logfile = '/cvpi/clickhouse/logs/clickhouse-server/clickhouse-server.err.log'
         logs = self.read_file(logfile, grep='::Exception')
 
+        line_number=1
         for line in logs:
             for error_message in self.error_messages:
                 if error_message in line:
@@ -53,8 +55,11 @@ class clickhouse_readonly_table(Bug):
                             namespace = table.groups()[0] + '.' + table.groups()[1]
                             if namespace not in issues[error_message]['tables']:
                                 issues[error_message]['tables'].append(namespace)
+                        diagnostic_entry = "grep '::Exception' %s| awk 'NR==%s'" %(logfile, line_number)
+                        diagnostic_files.append(diagnostic_entry)
                     else:
                         self.debug("Could not extract paths or tables from line: %s" %line, code.LOG_WARNING)
+            line_number += 1
 
         for issue in issues:
             if issues[issue]['paths'] or issues[issue]['tables']:
@@ -68,7 +73,7 @@ class clickhouse_readonly_table(Bug):
             else:
                 self.debug("No issues found in %s log lines" %len(logs), code.LOG_DEBUG)
 
-        self.set_status(value, message, issues)
+        self.set_status(value, message, issues, diagnostic_files=diagnostic_files)
         return value
 
     def patch(self, force=False):

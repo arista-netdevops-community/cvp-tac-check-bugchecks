@@ -1,7 +1,7 @@
 {
   "alertmanager_notification_errors": {
-    "version": "1.0.0",
-    "bug_engine_version": "2.4.0"
+    "version": "1.0.1",
+    "bug_engine_version": "2.11.0"
   },
   "ambassador_expired_certs": {
     "version": "1.2.1",
@@ -16,7 +16,7 @@
     "bug_engine_version": "2.9.0"
   },
   "bug": {
-    "version": "2.10.0",
+    "version": "2.11.0",
     "node_version": "1.0.0"
   },
   "cert_expiration": {
@@ -32,24 +32,24 @@
     "bug_engine_version": "2.0.0"
   },
   "clickhouse_readonly_table": {
-    "version": "2.0.1",
-    "bug_engine_version": "2.4.0"
+    "version": "2.0.2",
+    "bug_engine_version": "2.11.0"
   },
   "cve_sa70": {
     "version": "1.0.4",
     "bug_engine_version": "2.0.0"
   },
   "cvp_authentication_unreachable": {
-    "version": "1.0.3",
-    "bug_engine_version": "2.4.0"
+    "version": "1.0.4",
+    "bug_engine_version": "2.11.0"
   },
   "cvp_deadline_exceeded": {
-    "version": "1.0.4",
-    "bug_engine_version": "2.4.0"
+    "version": "1.0.5",
+    "bug_engine_version": "2.11.0"
   },
   "cvp_events_userinteraction": {
-    "version": "1.0.0",
-    "bug_engine_version": "2.4.0"
+    "version": "1.0.1",
+    "bug_engine_version": "2.11.0"
   },
   "cvp_files_mismatch": {
     "version": "1.1.1",
@@ -76,8 +76,8 @@
     "bug_engine_version": "2.9.2"
   },
   "docker_cgroup": {
-    "version": "2.0.3",
-    "bug_engine_version": "2.6.0"
+    "version": "2.0.4",
+    "bug_engine_version": "2.11.0"
   },
   "elasticsearch_oom_heap": {
     "version": "1.0.3",
@@ -140,8 +140,8 @@
     "bug_engine_version": "2.0.0"
   },
   "os_oom": {
-    "version": "1.0.4",
-    "bug_engine_version": "2.4.0"
+    "version": "1.0.5",
+    "bug_engine_version": "2.11.0"
   },
   "user_invalid_characters": {
     "version": "1.1.0",

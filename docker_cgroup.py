@@ -21,14 +21,19 @@ class docker_cgroup(Bug):
         is_configured = False
         is_applied = False
         is_affected = False
+        diagnostic_files = []
 
         if self.is_using_local_logs():
             was_checked = False
             for file in self.log_check_files:
                 contents = self.read_file(self.local_directory(directory_type='commands')+'/'+file)
+                line_number = 1
                 for line in contents:
                     if 'cannot allocate memory' in line and 'cgroup' in line:
+                        diagnostic_entry = "%s:%s" %(self.local_directory(directory_type='commands')+'/'+file, line_number)
+                        diagnostic_files.append(diagnostic_entry)
                         is_affected = True
+                    line_number += 1
         else:
             is_configured = self.run_command("grep -E ^GRUB_CMDLINE_LINUX.*cgroup.memory=nokmem.* " + self.grub_template).stdout
             is_applied = self.run_command("grep cgroup.memory=nokmem /proc/cmdline").stdout
@@ -52,7 +57,7 @@ class docker_cgroup(Bug):
             message = "Vulnerable. Current kernel has the patch applied but configuration is missing."
             value = code.WARNING
 
-        self.set_status(value, message)
+        self.set_status(value, message, diagnostic_files=diagnostic_files)
         return value
 
     def patch(self):

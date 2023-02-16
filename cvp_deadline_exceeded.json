@@ -4,8 +4,8 @@
   "tags": [
     "cvp"
   ],
-  "version": "1.0.4",
-  "bug_engine_version": "2.4.0",
+  "version": "1.0.5",
+  "bug_engine_version": "2.11.0",
   "scan": {
     "details": "Checks for `Context Deadline Exceeded` messages in services.",
     "privileges": "cvp"

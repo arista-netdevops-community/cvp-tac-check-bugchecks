@@ -5,8 +5,8 @@
     "clickhouse",
     "clover"
   ],
-  "version": "2.0.1",
-  "bug_engine_version": "2.4.0",
+  "version": "2.0.2",
+  "bug_engine_version": "2.11.0",
   "scan": {
     "details": "Check clickhouse logs for 'Table is in readonly mode' messages",
     "privileges": "cvp"

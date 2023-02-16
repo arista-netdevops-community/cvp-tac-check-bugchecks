@@ -7,8 +7,8 @@
     "tacacs",
     "authentication"
   ],
-  "version": "1.0.3",
-  "bug_engine_version": "2.4.0",
+  "version": "1.0.4",
+  "bug_engine_version": "2.11.0",
   "scan": {
     "details": "Checks for `Server unreachable` messages in aaa logs.",
     "privileges": "cvp"

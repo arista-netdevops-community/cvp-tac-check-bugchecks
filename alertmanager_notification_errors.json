@@ -5,8 +5,8 @@
   "tags": [
     "alertmanager"
   ],
-  "version": "1.0.0",
-  "bug_engine_version": "2.4.0",
+  "version": "1.0.1",
+  "bug_engine_version": "2.11.0",
   "scan": {
     "details": "Check alertmanager logs for 'Error on notify' or 'Notify for alerts failed' messages",
     "privileges": "cvp"

@@ -11,8 +11,8 @@
     "cvp",
     "events"
   ],
-  "version": "1.0.0",
-  "bug_engine_version": "2.4.0",
+  "version": "1.0.1",
+  "bug_engine_version": "2.11.0",
   "scan": {
     "details": "Checks the turbine-version-events-active.log for not found interactions",
     "privileges": "cvp"

@@ -7,6 +7,9 @@
 - `local_logs_directory()` will be removed.
 
 # Bug() changelog
+## 2.11.0
+- Add support for declaring files where the issue was detected on set_status()
+
 ## 2.10.0
 - certificates() supports getting certificates from kubernetes
 - certificates.is_valid now support different verifications: expiration date, start date, certificate chain and comparison between k8s and filesystem certificates.

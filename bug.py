@@ -807,6 +807,11 @@ class Bug(object):
     else:
       version = self.run_command('su - cvp -c "cvpi version"|grep version|cut -f3 -d" "|cut -f1 -d-', silence_cvpi_warning=True).stdout
       version = version[0]
+      # check the env var in case 'cvpi version' returns a devtag format
+      if version.startswith("CVP"):
+        version = self.run_command('su - cvp -c "echo $CVP_VERSION"', silence_cvpi_warning=True).stdout
+        version = version[0]
+
 
     self.debug(version, code.LOG_DEBUG)
     return(version)
@@ -900,7 +905,7 @@ class Bug(object):
     mode = self.config['node_config']['cluster_mode']
     return(mode)
 
-  def get_info(self):
+  def get_info(self, number_of_matched_diagnostic_files=5):
     """ Returns the bug object configuration
 
     Returns:
@@ -920,6 +925,21 @@ class Bug(object):
     for key in exclude_keys:
       if r.get(key):
         del r[key]
+
+    if number_of_matched_diagnostic_files and r['status'].get('diagnostic_files'):
+      temp = list(r['status']['diagnostic_files'])
+      temp.sort(reverse=True)
+      unique_files = []
+      for file in temp:
+        if ':' in file:
+            file_split = file.split(':')[0]
+            if len([f.split(':')[0] for f in unique_files if file_split in f]) < number_of_matched_diagnostic_files:
+                unique_files.append(file)
+        else:
+            unique_files.append(file)
+      unique_files.sort()
+
+      r['status']['diagnostic_files'] = unique_files
 
     self.debug("%s" % str(r), code.LOG_JEDI)
     return(r)
@@ -1461,7 +1481,7 @@ class Bug(object):
     """
     raise(NotImplementedError("A scan action was not defined"))
 
-  def set_status(self, value, message, extra=[], has_run=True):
+  def set_status(self, value, message, extra=[], has_run=True, diagnostic_files=[]):
     """ Sets the status of a bugcheck. Every bugcheck should use this at the end of
     the run.
 
@@ -1490,5 +1510,6 @@ class Bug(object):
     self.status['message'] = message
     self.status['extra'] = extra
     self.status['has_run'] = has_run
+    self.status['diagnostic_files'] = diagnostic_files
     self.debug("Status set: " + str(self.status), code.LOG_DEBUG)
 

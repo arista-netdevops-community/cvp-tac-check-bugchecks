@@ -5,8 +5,8 @@
     "os",
     "memory"
   ],
-  "version": "1.0.4",
-  "bug_engine_version": "2.4.0",
+  "version": "1.0.5",
+  "bug_engine_version": "2.11.0",
   "scan": {
     "details": "Checks if processes have been OOM killed on journalctl and kubelet_journalctl files.",
     "privileges": "cvp"
